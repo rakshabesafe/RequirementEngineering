@@ -1,0 +1,60 @@
+_format_version: "3.0"
+_comment: "Declarative configuration for Kong API Gateway"
+
+services:
+  - name: project-input-service
+    url: http://project-input-service:8000
+    connect_timeout: 5000
+    write_timeout: 5000
+    read_timeout: 5000
+    retries: 5
+
+  - name: architecture-adr-service
+    url: http://architecture-adr-service:8000
+    connect_timeout: 5000
+    write_timeout: 5000
+    read_timeout: 5000
+    retries: 5
+
+  - name: integration-service
+    url: http://integration-and-sync-service:8000
+    connect_timeout: 15000 # Longer timeout for external API calls
+    write_timeout: 15000
+    read_timeout: 15000
+    retries: 3
+
+  - name: requirements-agent-service
+    url: http://requirements-agent-service:8000
+    connect_timeout: 300000 # Very long timeout for AI agent processing
+    write_timeout: 300000
+    read_timeout: 300000
+    retries: 1
+
+routes:
+  # --- Routes for Project Input Service ---
+  - name: project-api-route
+    service: project-input-service
+    paths:
+      - /project-api
+    strip_path: true
+
+  # --- Routes for Architecture ADR Service ---
+  - name: arch-api-route
+    service: architecture-adr-service
+    paths:
+      - /arch-api
+    strip_path: true
+
+  # --- Routes for Integration Service ---
+  - name: integration-api-route
+    service: integration-service
+    paths:
+      - /integration-api
+    strip_path: true
+
+  # --- Routes for Requirements Agent Service ---
+  - name: req-agent-api-route
+    service: requirements-agent-service
+    paths:
+      - /req-agent-api
+    strip_path: true
